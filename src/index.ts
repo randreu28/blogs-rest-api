@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import morgan from "morgan";
 import type { Request, Response } from "express";
 const app = express();
+import config from "./utils/config";
 
 dotenv.config();
 morgan.token("body", (req: Request, _res: Response) => {
@@ -15,17 +16,15 @@ app.use(
 
 app.use(morgan("tiny"));
 
-const port = process.env.PORT || 3001;
-
 mongoose.set("strictQuery", false);
 mongoose
   .connect(
-    `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@fullstackopencluster.zgr0jwp.mongodb.net/blogs?retryWrites=true&w=majority`
+    `mongodb+srv://${config.DB_USERNAME}:${config.DB_PASSWORD}@fullstackopencluster.zgr0jwp.mongodb.net/blogs?retryWrites=true&w=majority`
   )
   .then(() => {
     console.log("Connected to MongoDB");
-    app.listen(port, () => {
-      console.log(`Server running at http://localhost:${port}`);
+    app.listen(config.PORT, () => {
+      console.log(`Server running at http://localhost:${config.PORT}`);
     });
   })
   .catch((e) => {
