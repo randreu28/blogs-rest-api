@@ -1,8 +1,8 @@
-const info = (...params: any) => {
+const info = (...params: unknown[]) => {
   console.log(...params);
 };
 
-const error = (...params: any) => {
+const error = (...params: unknown[]) => {
   console.error(...params);
 };
 
