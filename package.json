@@ -4,11 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon src/index.ts",
+    "start": "NODE_ENV=production ts-node src/index.ts",
+    "dev": "NODE_ENV=development nodemon src/index.ts",
     "build": "tsc",
     "serve": "node dist/index.js",
     "lint": "eslint .",
-    "test": "jest --verbose"
+    "test": "NODE_ENV=test jest --verbose"
   },
   "keywords": [],
   "author": "",

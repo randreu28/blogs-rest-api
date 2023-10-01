@@ -2,12 +2,23 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const PORT = process.env.PORT || 3001;
-const DB_USERNAME = process.env.DB_USERNAME;
-const DB_PASSWORD = process.env.DB_PASSWORD;
-
-if (DB_USERNAME === undefined || DB_PASSWORD === undefined) {
+if (
+  process.env.MONGODB_URI === undefined ||
+  process.env.TEST_MONGODB_URI === undefined
+) {
   throw Error("Enviroment variables missing");
 }
 
-export default { PORT, DB_USERNAME, DB_PASSWORD };
+const PORT = process.env.PORT || 3001;
+
+/* 
+The current enviroment
+ */
+const ENV = process.env.NODE_ENV || "development";
+
+const URI =
+  process.env.NODE_ENV === "test"
+    ? process.env.TEST_MONGODB_URI
+    : process.env.MONGODB_URI;
+
+export default { PORT, URI, ENV };
