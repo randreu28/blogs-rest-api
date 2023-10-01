@@ -137,3 +137,33 @@ test("delete a blog post", async () => {
 
   expect(blogsAfterDelete).not.toContainEqual(blogToDelete);
 });
+
+test("update a blog post", async () => {
+  const newBlog = {
+    title: "New Blog",
+    author: "New Author",
+    url: "http://newblog.com",
+    likes: 5,
+  };
+
+  const postResponse = await api
+    .post("/api/blogs")
+    .send(newBlog)
+    .expect(200)
+    .expect("Content-Type", /application\/json/);
+
+  const blogToUpdate = postResponse.body;
+  const updatedBlog = {
+    ...blogToUpdate,
+    title: "Updated Blog",
+  };
+
+  const putResponse = await api
+    .put(`/api/blogs/${blogToUpdate.id}`)
+    .send(updatedBlog)
+    .expect(200)
+    .expect("Content-Type", /application\/json/);
+
+  const returnedBlog = putResponse.body;
+  expect(returnedBlog.title).toBe("Updated Blog");
+});

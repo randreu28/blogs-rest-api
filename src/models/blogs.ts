@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { z } from "zod";
 
 const blogSchema = new mongoose.Schema({
   title: {
@@ -29,5 +30,12 @@ export type BlogType = {
   likes?: number;
   id?: number;
 };
+
+export const zodBlogSchema = z.object({
+  title: z.string().min(5),
+  author: z.string(),
+  url: z.string(),
+  likes: z.number().default(0),
+});
 
 export default mongoose.model("Blog", blogSchema);
