@@ -7,7 +7,7 @@ export function dbConnect(app: express.Express) {
   mongoose.set("strictQuery", false);
   mongoose
     .connect(
-      `mongodb+srv://${config.DB_USERNAME}:${config.DB_PASSWORD}@fullstackopencluster.zgr0jwp.mongodb.net/phonebook?retryWrites=true&w=majority`
+      `mongodb+srv://${config.DB_USERNAME}:${config.DB_PASSWORD}@fullstackopencluster.zgr0jwp.mongodb.net/blogs?retryWrites=true&w=majority`
     )
     .then(() => {
       logger.info("Connected to MongoDB");
