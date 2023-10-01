@@ -22,4 +22,12 @@ blogSchema.set("toJSON", {
   },
 });
 
+export type BlogType = {
+  title: string;
+  author?: string;
+  url?: string;
+  likes?: number;
+  id?: number;
+};
+
 export default mongoose.model("Blog", blogSchema);
