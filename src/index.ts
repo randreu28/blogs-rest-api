@@ -1,4 +1,4 @@
-import type { Request, Response } from "express";
+import type { Request } from "express";
 import express from "express";
 import morgan from "morgan";
 import blogsRouter from "./controllers/blogs";
@@ -8,7 +8,7 @@ import middleware from "./utils/middleware";
 const app = express();
 
 app.use(middleware.requestLogger);
-morgan.token("body", (req: Request, _res: Response) => {
+morgan.token("body", (req: Request) => {
   return JSON.stringify(req.body);
 });
 app.use(
@@ -17,6 +17,8 @@ app.use(
 app.use(morgan("tiny"));
 
 dbConnect(app);
+
+app.use(express.json());
 
 app.use("/api/blogs", blogsRouter);
 
