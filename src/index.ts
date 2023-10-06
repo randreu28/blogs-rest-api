@@ -4,6 +4,7 @@ import morgan from "morgan";
 import blogsRouter from "./controllers/blogs";
 import { dbConnect } from "./utils/dbConnect";
 import middleware from "./utils/middleware";
+import infoRouter from "./controllers/info";
 
 const app = express();
 
@@ -21,6 +22,7 @@ dbConnect(app);
 app.use(express.json());
 
 app.use("/api/blogs", blogsRouter);
+app.use("/", infoRouter);
 
 app.use(middleware.unknownEndpoint);
 app.use(middleware.errorHandler);
