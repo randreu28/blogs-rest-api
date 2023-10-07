@@ -5,6 +5,7 @@ import blogsRouter from "./controllers/blogs";
 import { dbConnect } from "./utils/dbConnect";
 import middleware from "./utils/middleware";
 import infoRouter from "./controllers/info";
+import "express-async-errors";
 
 const app = express();
 
