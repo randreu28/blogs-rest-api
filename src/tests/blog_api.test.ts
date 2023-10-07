@@ -1,33 +1,13 @@
 import supertest from "supertest";
 import app from "..";
 import blogs, { BlogType } from "../models/blogs";
+import helper from "./test_helper";
 
 const api = supertest(app);
 
-const initialBlogs = [
-  {
-    title: "Fake Blog 1",
-    author: "Fake Author 1",
-    url: "http://fakeblog1.com",
-    likes: 3,
-  },
-  {
-    title: "Fake Blog 2",
-    author: "Fake Author 2",
-    url: "http://fakeblog2.com",
-    likes: 2,
-  },
-  {
-    title: "Fake Blog 3",
-    author: "Fake Author 3",
-    url: "http://fakeblog3.com",
-    likes: 1,
-  },
-] satisfies BlogType[];
-
 beforeEach(async () => {
   await blogs.deleteMany({});
-  for (const blog of initialBlogs) {
+  for (const blog of helper.initialBlogs) {
     const blogObject = new blogs(blog);
     await blogObject.save();
   }
@@ -43,7 +23,7 @@ test("blogs are returned as json", async () => {
 test("correct amount of blog posts are returned", async () => {
   const response = await api.get("/api/blogs");
 
-  expect(response.body).toHaveLength(initialBlogs.length);
+  expect(response.body).toHaveLength(helper.initialBlogs.length);
 });
 
 test("unique identifier property of the blog posts is named id", async () => {
@@ -74,7 +54,7 @@ test("a valid blog can be added ", async () => {
   const blogs = response.body as BlogType[];
   const contents = blogs.map((blog) => blog.title);
 
-  expect(response.body).toHaveLength(initialBlogs.length + 1);
+  expect(response.body).toHaveLength(helper.initialBlogs.length + 1);
   expect(contents).toContain("New Blog");
 });
 
