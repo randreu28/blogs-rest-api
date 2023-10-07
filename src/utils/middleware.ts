@@ -29,6 +29,10 @@ function errorHandler(
     return res.status(400).json({ error: error.message });
   }
 
+  if (error.name === "JsonWebTokenError") {
+    return res.status(401).json({ error: error.message });
+  }
+
   next(error);
 }
 

@@ -22,7 +22,7 @@ loginRouter.post("/", async (req, res) => {
   const { username, password } = body;
   const user = await User.findOne({ username });
 
-  if (!user || !user.passwordHash) {
+  if (!user || !user.passwordHash || !user.username) {
     return res.sendStatus(404);
   }
 
@@ -38,11 +38,16 @@ loginRouter.post("/", async (req, res) => {
   const userForToken = {
     username: user.username,
     id: user.id,
-  };
+  } satisfies jwtPayload;
 
   const token = jwt.sign(userForToken, config.SECRET);
 
   res.status(200).send({ token, username: user.username, name: user.name });
 });
+
+export type jwtPayload = {
+  username: string;
+  id: string;
+};
 
 export default loginRouter;
