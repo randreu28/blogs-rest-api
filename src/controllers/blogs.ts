@@ -8,7 +8,7 @@ const blogsRouter = express.Router();
 
 // GET all blogs
 blogsRouter.get("/", async (_req, res) => {
-  const blogs = await Blog.find({});
+  const blogs = await Blog.find({}).populate("user");
 
   res.json(blogs.map((blog) => blog));
 });
@@ -35,6 +35,11 @@ blogsRouter.post("/", async (req, res) => {
 
   const blog = new Blog({ ...body, user: userExists.id });
   const savedBlog = await blog.save();
+
+  await User.findByIdAndUpdate(userExists.id, {
+    $push: { blogs: savedBlog._id },
+  });
+
   res.json(savedBlog.toJSON());
 });
 

@@ -31,6 +31,9 @@ beforeEach(async () => {
   for (const blog of helper.getInitialBlogs(rootUserId)) {
     const blogObject = new blogs(blog);
     await blogObject.save();
+    await User.findByIdAndUpdate(rootUserId, {
+      $push: { blogs: blogObject._id },
+    });
   }
 });
 
