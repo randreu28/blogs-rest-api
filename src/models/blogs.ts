@@ -38,6 +38,7 @@ export const zodBlogSchema = z.object({
 /* For testing */
 export interface BlogType extends z.infer<typeof zodBlogSchema> {
   id?: string;
+  user: string;
 }
 
 export default mongoose.model("Blog", blogSchema);

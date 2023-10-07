@@ -1,5 +1,7 @@
 import express from "express";
 import Blog, { zodBlogSchema } from "../models/blogs";
+import User from "../models/users";
+import getUserFromToken from "../utils/jwt";
 import parseBody from "../utils/parser";
 
 const blogsRouter = express.Router();
@@ -19,10 +21,21 @@ blogsRouter.post("/", async (req, res) => {
     return res.sendStatus(400);
   }
 
-  const blog = new Blog(body);
+  const user = getUserFromToken(req);
 
+  if (!user) {
+    return res.sendStatus(401);
+  }
+
+  const userExists = await User.findOne({ username: user.username });
+
+  if (!userExists) {
+    return res.sendStatus(401);
+  }
+
+  const blog = new Blog({ ...body, user: userExists.id });
   const savedBlog = await blog.save();
-  res.json(savedBlog);
+  res.json(savedBlog.toJSON());
 });
 
 // GET a blog by id
@@ -48,6 +61,28 @@ blogsRouter.put("/:id", async (req, res) => {
 
   if (parseError) {
     return res.sendStatus(400);
+  }
+
+  const user = getUserFromToken(req);
+
+  if (!user) {
+    return res.sendStatus(401);
+  }
+
+  const blog = await Blog.findById(req.params.id);
+
+  if (!blog) {
+    return res.sendStatus(404);
+  }
+  const originalUser = await User.findById(blog.user);
+  const requesterUser = await User.findById(user.id);
+
+  if (!originalUser || !requesterUser) {
+    return res.sendStatus(401);
+  }
+
+  if (!originalUser._id.equals(requesterUser._id)) {
+    return res.sendStatus(401);
   }
 
   const updatedBlog = await Blog.findByIdAndUpdate(req.params.id, body, {

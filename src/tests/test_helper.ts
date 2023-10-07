@@ -1,26 +1,31 @@
 import Blog, { BlogType } from "../models/blogs";
 import User from "../models/users";
 
-const initialBlogs = [
-  {
-    title: "Fake Blog 1",
-    author: "Fake Author 1",
-    url: "http://fakeblog1.com",
-    likes: 3,
-  },
-  {
-    title: "Fake Blog 2",
-    author: "Fake Author 2",
-    url: "http://fakeblog2.com",
-    likes: 2,
-  },
-  {
-    title: "Fake Blog 3",
-    author: "Fake Author 3",
-    url: "http://fakeblog3.com",
-    likes: 1,
-  },
-] satisfies BlogType[];
+const getInitialBlogs = (user: string): BlogType[] => {
+  return [
+    {
+      title: "Fake Blog 1",
+      author: "Fake Author 1",
+      url: "http://fakeblog1.com",
+      likes: 3,
+      user: user,
+    },
+    {
+      title: "Fake Blog 2",
+      author: "Fake Author 2",
+      url: "http://fakeblog2.com",
+      likes: 2,
+      user: user,
+    },
+    {
+      title: "Fake Blog 3",
+      author: "Fake Author 3",
+      url: "http://fakeblog3.com",
+      likes: 1,
+      user: user,
+    },
+  ];
+};
 
 const nonExistingId = async () => {
   const blog = new Blog({ content: "willremovethissoon" });
@@ -41,7 +46,7 @@ const usersInDb = async () => {
 };
 
 export default {
-  initialBlogs,
+  getInitialBlogs,
   nonExistingId,
   blogsInDb,
   usersInDb,
