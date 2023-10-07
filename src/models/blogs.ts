@@ -23,19 +23,17 @@ blogSchema.set("toJSON", {
   },
 });
 
-export type BlogType = {
-  title: string;
-  author?: string;
-  url?: string;
-  likes?: number;
-  id?: number;
-};
-
+/* For parsing */
 export const zodBlogSchema = z.object({
   title: z.string().min(5),
   author: z.string(),
   url: z.string(),
   likes: z.number().default(0),
 });
+
+/* For testing */
+export interface BlogType extends z.infer<typeof zodBlogSchema> {
+  id?: string;
+}
 
 export default mongoose.model("Blog", blogSchema);
