@@ -1,6 +1,6 @@
 import express from "express";
 import Blog, { zodBlogSchema } from "../models/blogs";
-import { z } from "zod";
+import parseBody from "../utils/parser";
 
 const blogsRouter = express.Router();
 
@@ -13,17 +13,13 @@ blogsRouter.get("/", async (_req, res) => {
 
 // POST a new blog
 blogsRouter.post("/", async (req, res) => {
-  const body = req.body;
+  const { body, parseError } = parseBody(req, zodBlogSchema);
 
-  const parsedData = zodBlogSchema.safeParse(body);
-
-  if (!parsedData.success) {
-    res.status(400).json({ error: "Invalid request data" });
-    return;
+  if (parseError) {
+    return res.sendStatus(400);
   }
 
-  const parsedBody = body as z.infer<typeof zodBlogSchema>;
-  const blog = new Blog(parsedBody);
+  const blog = new Blog(body);
 
   const savedBlog = await blog.save();
   res.json(savedBlog);
@@ -32,32 +28,29 @@ blogsRouter.post("/", async (req, res) => {
 // GET a blog by id
 blogsRouter.get("/:id", async (req, res) => {
   const blog = await Blog.findById(req.params.id);
-  if (blog) {
-    res.json(blog);
-  } else {
-    res.status(404).end();
+
+  if (!blog) {
+    res.status(404);
   }
+
+  res.json(blog);
 });
 
 // DELETE a blog by id
 blogsRouter.delete("/:id", async (req, res) => {
   await Blog.findByIdAndRemove(req.params.id);
-  res.status(204).end();
+  res.sendStatus(204);
 });
 
 // UPDATE a blog by id
 blogsRouter.put("/:id", async (req, res) => {
-  const body = req.body;
+  const { body, parseError } = parseBody(req, zodBlogSchema);
 
-  const parsedData = zodBlogSchema.safeParse(body);
-
-  if (!parsedData.success) {
-    res.status(400).json({ error: "Invalid request data" });
-    return;
+  if (parseError) {
+    return res.sendStatus(400);
   }
 
-  const parsedBody = body as z.infer<typeof zodBlogSchema>;
-  const updatedBlog = await Blog.findByIdAndUpdate(req.params.id, parsedBody, {
+  const updatedBlog = await Blog.findByIdAndUpdate(req.params.id, body, {
     new: true,
   });
   res.json(updatedBlog);
