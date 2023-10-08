@@ -8,6 +8,7 @@ import infoRouter from "./controllers/info";
 import "express-async-errors";
 import usersRouter from "./controllers/users";
 import loginRouter from "./controllers/login";
+import cors from "cors";
 
 const app = express();
 
@@ -23,6 +24,7 @@ app.use(morgan("tiny"));
 dbConnect(app);
 
 app.use(express.json());
+app.use(cors());
 
 app.use("/api/blogs", blogsRouter);
 app.use("/api/users", usersRouter);
