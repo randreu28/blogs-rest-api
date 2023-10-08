@@ -20,11 +20,13 @@ beforeEach(async () => {
 
 describe("Login API", () => {
   test("login with correct credentials", async () => {
-    await api
+    const response = await api
       .post("/api/login")
       .send(adminUser)
       .expect(200)
       .expect("Content-Type", /application\/json/);
+
+    expect(response.body.id).toBeDefined();
   });
 
   test("login with incorrect credentials", async () => {
