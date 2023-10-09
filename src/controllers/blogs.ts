@@ -56,6 +56,28 @@ blogsRouter.get("/:id", async (req, res) => {
 
 // DELETE a blog by id
 blogsRouter.delete("/:id", async (req, res) => {
+  const user = getUserFromToken(req);
+
+  if (!user) {
+    return res.sendStatus(401);
+  }
+
+  const blog = await Blog.findById(req.params.id);
+
+  if (!blog) {
+    return res.sendStatus(404);
+  }
+  const originalUser = await User.findById(blog.user);
+  const requesterUser = await User.findById(user.id);
+
+  if (!originalUser || !requesterUser) {
+    return res.sendStatus(401);
+  }
+
+  if (!originalUser._id.equals(requesterUser._id)) {
+    return res.sendStatus(401);
+  }
+
   await Blog.findByIdAndRemove(req.params.id);
   res.sendStatus(204);
 });
